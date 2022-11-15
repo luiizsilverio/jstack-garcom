@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { Order } from "../../models/order";
 
-export async function listOrders(req: Request, res: Response) {
+export async function deleteOrder(req: Request, res: Response) {
+  const { orderId } = req.params;
 
   try {
-    const orders = await Order.find()
-      .sort({ createdAt: 1 })
-      .populate("products.product")
 
-    res.json(orders);
+    await Order.findByIdAndDelete(orderId);
+
+    res.status(204).send(); // ou res.sendStatus(204);
   }
   catch (err) {
     if (err instanceof Error) {

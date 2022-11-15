@@ -7,7 +7,7 @@ export async function createOrder(req: Request, res: Response) {
   try {
     const order = await Order.create({
       table,
-      products: products ? JSON.parse(products): []
+      products: products || []
     });
 
     res.status(201).json(order);
