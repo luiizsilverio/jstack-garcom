@@ -1,16 +1,12 @@
 import { Request, Response } from "express";
-import { Category } from "../../models/category";
+import { Order } from "../../models/order";
 
-export async function createCategory(req: Request, res: Response) {
-  const { name, icon } = req.body;
+export async function listOrders(req: Request, res: Response) {
 
   try {
-    const category = await Category.create({
-      name,
-      icon,
-    });
+    const orders = await Order.find();
 
-    res.status(201).json(category);
+    res.json(orders);
   }
   catch (err) {
     if (err instanceof Error) {
