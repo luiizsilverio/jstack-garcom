@@ -19,10 +19,19 @@ export function Board(props: Props) {
     setSelOrder(order);
   }
 
+  function handleCloseModal() {
+    setModalVisible(false);
+    setSelOrder(null);
+  }
+
   return (
     <S.BoardContainer>
 
-      <OrderModal visible={modalVisible} order={selOrder} />
+      <OrderModal
+        visible={modalVisible}
+        order={selOrder}
+        onClose={handleCloseModal}
+      />
 
       <header>
         <span>{icon}</span>

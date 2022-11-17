@@ -61,6 +61,19 @@ export const Details = styled.div`
     opacity: 0.8;
   }
 
+  .total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+
+    span {
+      font-weight: 500;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  }
+
   .order-items {
     margin-top: 16px;
 
@@ -100,5 +113,32 @@ export const Details = styled.div`
         }
       }
     }
+  }
+`;
+
+export const Actions = styled.footer`
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+
+  .primary {
+    background: #333333;
+    border-radius: 48px;
+    border: 0;
+    color: #fff;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .secondary {
+    padding: 14px 24px;
+    color: #d73035;
+    font-weight: bold;
+    border: 0;
+    background: transparent;
+    margin-top: 8px;
   }
 `;
