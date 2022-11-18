@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { KeyboardEvent, useEffect, useMemo } from "react";
 import * as S from "./styles"
 import closeIcon from '../../assets/images/close-icon.svg';
 import { IOrder } from "../../types/Order";
@@ -19,6 +19,22 @@ export function OrderModal({ visible, order, onClose }: Props) {
       acc + (item.product.price * item.quantity)
     ), 0)
   ), [order])
+
+
+  useEffect(() => {
+    function handleKeyDown(event: any) {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    }
+
+    document.addEventListener('keydown',handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [onClose]);
+
 
   return (
     <S.Overlay>
