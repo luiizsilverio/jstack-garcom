@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ActivityIndicator } from "react-native";
 import { Button } from "../../components/Button";
 import { Cart } from "../../components/Cart";
 import { Categories } from "../../components/Categories";
@@ -13,14 +14,17 @@ export function Main() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selTable, setSelTable] = useState('');
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleSaveTable(table: string) {
     setSelTable(table);
   }
 
-  function handleCancelOrder() {
+  function handleResetOrder() {
     setSelTable('');
+    setCartItems([]);
   }
+
 
   function handleAddToCart(product: IProduct) {
     if (!selTable) {
@@ -49,18 +53,54 @@ export function Main() {
     })
   }
 
+
+  function handleRemoveItem(product: IProduct) {
+
+    setCartItems((prevState) => {
+      const itemIndex = prevState.findIndex(item => item.product._id === product._id);
+
+      if (itemIndex < 0) return prevState;
+
+      const newQtd = prevState[itemIndex].quantity - 1;
+      const item = prevState[itemIndex];
+      const newCartItems = [...prevState];
+
+      if (newQtd === 0) {
+        newCartItems.splice(itemIndex, 1);
+
+      } else {
+        newCartItems[itemIndex] = {
+          ...item,
+          quantity: newQtd,
+        }
+      }
+
+      return newCartItems;
+    })
+  }
+
+
   return (
     <>
       <S.Container>
-        <Header selectedTable={selTable} onCancel={handleCancelOrder} />
+        <Header selectedTable={selTable} onCancel={handleResetOrder} />
+          {
+            isLoading ? (
+              <S.CenterContainer>
+                <ActivityIndicator color="#ccc" size="large" />
+              </S.CenterContainer>
+            ) : (
+              <>
+                <S.CategoriesContainer>
+                  <Categories />
+                </S.CategoriesContainer>
 
-        <S.CategoriesContainer>
-          <Categories />
-        </S.CategoriesContainer>
-
-        <S.MenuContainer>
-          <Menu onAddToCart={handleAddToCart} />
-        </S.MenuContainer>
+                <S.MenuContainer>
+                  <Menu onAddToCart={handleAddToCart} />
+                </S.MenuContainer>
+              </>
+            )
+          }
 
       </S.Container>
 
@@ -69,10 +109,18 @@ export function Main() {
           {
             selTable
               ? (
-                <Cart cartItems={cartItems} />
+                <Cart
+                  cartItems={cartItems}
+                  onAdd={handleAddToCart}
+                  onRemove={handleRemoveItem}
+                  onConfirm={handleResetOrder}
+                />
               )
               : (
-                <Button onPress={() => setModalVisible(true)}>
+                <Button
+                  onPress={() => setModalVisible(true)}
+                  disabled={isLoading}
+                >
                   Novo Pedido
                 </Button>
               )

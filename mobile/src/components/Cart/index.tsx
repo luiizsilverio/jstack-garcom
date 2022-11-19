@@ -1,18 +1,50 @@
 import { FlatList, TouchableOpacity } from "react-native";
+import { useState, useMemo } from 'react';
 import { ICartItem } from "../../types/CartItem";
+import { IProduct } from "../../types/Product";
 import { Button } from "../Button";
 import { MinusCircle } from "../Icons/MinusCircle";
 import { PlusCircle } from "../Icons/PlusCircle";
 import { Text } from "../Text";
 import * as S from './styles';
+import { ConfirmOrderModal } from "../ConfirmOrderModal";
 
 interface Props {
   cartItems: ICartItem[]
+  onAdd: (product: IProduct) => void;
+  onRemove: (product: IProduct) => void;
+  onConfirm(): void;
 }
 
-export function Cart({ cartItems }: Props) {
+export function Cart({ cartItems, onAdd, onRemove, onConfirm }: Props) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const total = useMemo(() => (
+    cartItems.reduce((acc, cartItem) => {
+      return acc + (cartItem.quantity * cartItem.product.price);
+    }, 0)
+  ), [cartItems]);
+
+
+  function handleConfirmOrder() {
+    setModalVisible(true);
+  }
+
+
+  function handleOk() {
+    onConfirm();
+    setModalVisible(false);
+  }
+
+
   return (
     <>
+      <ConfirmOrderModal
+        visible={modalVisible}
+        onClose={handleOk}
+      />
+
       {cartItems.length > 0 && (
         <FlatList
           data={cartItems}
@@ -39,10 +71,16 @@ export function Cart({ cartItems }: Props) {
               </S.ProductContainer>
 
               <S.Actions>
-                <TouchableOpacity style={{ marginRight: 20 }}>
+                <TouchableOpacity
+                  style={{ marginRight: 20 }}
+                  onPress={() => onAdd(item.product)}
+                >
                   <PlusCircle  />
                 </TouchableOpacity>
-                <TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => onRemove(item.product)}
+                >
                   <MinusCircle />
                 </TouchableOpacity>
               </S.Actions>
@@ -56,7 +94,7 @@ export function Cart({ cartItems }: Props) {
           {cartItems.length > 0 ? (
             <>
               <Text color="#666">Total</Text>
-              <Text size={20} weight="600">R$ {120.00}</Text>
+              <Text size={20} weight="600">R$ {total.toFixed(2)}</Text>
             </>
           ) : (
             <Text color="#999">Seu carrinho está vazio</Text>
@@ -65,7 +103,8 @@ export function Cart({ cartItems }: Props) {
 
         <Button
           disabled={cartItems.length === 0}
-          onPress={() => {}}
+          onPress={handleConfirmOrder}
+          loading={isLoading}
         >
           Confirmar pedido
         </Button>
