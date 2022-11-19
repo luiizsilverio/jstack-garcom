@@ -5,32 +5,14 @@ import { Categories } from "../../components/Categories";
 import { Header } from "../../components/Header";
 import { Menu } from "../../components/Menu";
 import { TableModal } from "../../components/TableModal";
-import { products } from "../../mocks/products";
 import { ICartItem } from "../../types/CartItem";
+import { IProduct } from "../../types/Product";
 import * as S from './styles';
 
 export function Main() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selTable, setSelTable] = useState('');
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
-  // const [cartItems, setCartItems] = useState<ICartItem[]>([
-  //   {
-  //     quantity: 1,
-  //     product: products[0]
-  //   },
-  //   {
-  //     quantity: 2,
-  //     product: products[1]
-  //   },
-  //   {
-  //     quantity: 3,
-  //     product: products[2]
-  //   },
-  //   {
-  //     quantity: 1,
-  //     product: products[3]
-  //   },
-  // ]);
 
   function handleSaveTable(table: string) {
     setSelTable(table);
@@ -38,6 +20,33 @@ export function Main() {
 
   function handleCancelOrder() {
     setSelTable('');
+  }
+
+  function handleAddToCart(product: IProduct) {
+    if (!selTable) {
+      setModalVisible(true);
+    }
+
+    setCartItems((prevState) => {
+      const itemIndex = prevState.findIndex(item => item.product._id === product._id);
+
+      if (itemIndex < 0) {
+        return prevState.concat({
+          quantity: 1,
+          product,
+        });
+      }
+
+      const newCartItems = [...prevState];
+      const item = newCartItems[itemIndex];
+
+      newCartItems[itemIndex] = {
+        ...item,
+        quantity: item.quantity + 1
+      }
+
+      return newCartItems;
+    })
   }
 
   return (
@@ -50,7 +59,7 @@ export function Main() {
         </S.CategoriesContainer>
 
         <S.MenuContainer>
-          <Menu />
+          <Menu onAddToCart={handleAddToCart} />
         </S.MenuContainer>
 
       </S.Container>

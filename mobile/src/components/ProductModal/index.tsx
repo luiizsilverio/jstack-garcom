@@ -9,9 +9,15 @@ interface Props {
   visible: boolean;
   product: IProduct | null;
   onClose(): void;
+  onAddToCart: (product: IProduct) => void;
 }
 
-export function ProductModal({ visible, product, onClose }: Props) {
+export function ProductModal({ visible, product, onClose, onAddToCart }: Props) {
+
+  function handleAddToCart() {
+    onAddToCart(product!);
+    onClose();
+  }
 
   if (!product) return null;
 
@@ -68,7 +74,10 @@ export function ProductModal({ visible, product, onClose }: Props) {
               R$ {product.price.toFixed(2)}
             </Text>
           </S.PriceContainer>
-          <Button onPress={() => {}}>Adicionar ao pedido</Button>
+
+          <Button onPress={handleAddToCart}>
+            Adicionar ao pedido
+          </Button>
         </S.FooterContainer>
       </S.Footer>
 

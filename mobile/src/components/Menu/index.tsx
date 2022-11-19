@@ -8,7 +8,11 @@ import { ProductModal } from "../ProductModal";
 import { Text } from "../Text";
 import * as S from './styles';
 
-export function Menu() {
+interface Props {
+  onAddToCart: (product: IProduct) => void;
+}
+
+export function Menu({ onAddToCart }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
 
@@ -23,6 +27,7 @@ export function Menu() {
         visible={modalVisible}
         product={selectedProduct}
         onClose={() => setModalVisible(false)}
+        onAddToCart={() => onAddToCart(selectedProduct)}
       />
       <FlatList
         data={products}
@@ -43,7 +48,7 @@ export function Menu() {
               <Text size={14} weight="600">R$ {product.price.toFixed(2)}</Text>
             </S.ProductDetails>
 
-            <S.AddToCartBtn>
+            <S.AddToCartBtn onPress={() => onAddToCart(product)}>
               <PlusCircle />
             </S.AddToCartBtn>
           </S.Product>
