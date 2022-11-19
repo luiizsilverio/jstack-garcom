@@ -12,13 +12,16 @@ export function Main() {
 
   function handleSaveTable(table: string) {
     setSelTable(table);
-    // setSelTable('');
+  }
+
+  function handleCancelOrder() {
+    setSelTable('');
   }
 
   return (
     <>
       <S.Container>
-        <Header />
+        <Header selectedTable={selTable} onCancel={handleCancelOrder} />
 
         <S.CategoriesContainer>
           <Categories />
