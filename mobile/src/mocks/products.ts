@@ -25,6 +25,21 @@ export const products = [
         name: 'Brie',
         icon: '🧀',
         _id: '6372e040f52e37ef85fe2c62'
+      },
+      {
+        name: 'Gorgonzola',
+        icon: '🧀',
+        _id: '6372e040f2227ef85fe2c61'
+      },
+      {
+        name: 'Camembert',
+        icon: '🧀',
+        _id: '6372e040f22233385fe2c61'
+      },
+      {
+        name: 'Prato',
+        icon: '🧀',
+        _id: '6372e040f111ef85fe2c62'
       }
     ],
   },

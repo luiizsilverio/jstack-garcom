@@ -1,6 +1,7 @@
 import { FlatList, TouchableOpacity } from "react-native";
 import { useState } from 'react';
 
+import { IProduct } from "../../types/Product";
 import { products } from "../../mocks/products";
 import { PlusCircle } from "../Icons/PlusCircle";
 import { ProductModal } from "../ProductModal";
@@ -9,10 +10,20 @@ import * as S from './styles';
 
 export function Menu() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
+
+  function handleOpenModal(product: IProduct) {
+    setModalVisible(true);
+    setSelectedProduct(product);
+  }
 
   return (
     <>
-      <ProductModal visible={modalVisible} />
+      <ProductModal
+        visible={modalVisible}
+        product={selectedProduct}
+        onClose={() => setModalVisible(false)}
+      />
       <FlatList
         data={products}
         keyExtractor={(prod) => prod._id}
@@ -20,7 +31,7 @@ export function Menu() {
         contentContainerStyle={{ paddingHorizontal: 24 }}
         ItemSeparatorComponent={() => <S.Divider />}
         renderItem={({ item: product }) => (
-          <S.Product onPress={() => setModalVisible(true)}>
+          <S.Product onPress={() => handleOpenModal(product)}>
             <S.ProductImage
               source={{ uri: `http://192.168.100.2:3000/uploads/${product.imagePath}`}}
             />
