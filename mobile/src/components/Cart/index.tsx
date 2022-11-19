@@ -55,7 +55,7 @@ export function Cart({ cartItems, onAdd, onRemove, onConfirm }: Props) {
             <S.ItemContainer>
               <S.ProductContainer>
                 <S.Image
-                  source={{ uri: `http://192.168.100.2:3000/uploads/${item.product.imagePath}`}}
+                  source={{ uri: `http://${process.env.API_URL}/uploads/${item.product.imagePath}`}}
                 />
 
                 <S.QuantityContainer>

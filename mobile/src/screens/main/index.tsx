@@ -1,20 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
+
 import { Button } from "../../components/Button";
 import { Cart } from "../../components/Cart";
 import { Categories } from "../../components/Categories";
 import { Header } from "../../components/Header";
 import { Menu } from "../../components/Menu";
 import { TableModal } from "../../components/TableModal";
+import { Empty } from "../../components/Icons/Empty";
+import { Text } from "../../components/Text";
+import * as S from './styles';
+
+// import { products as mockProducts} from "../../mocks/products";
+// import { categories as mockCategories } from "../../mocks/categories";
+import { ICategory } from "../../types/Category";
 import { ICartItem } from "../../types/CartItem";
 import { IProduct } from "../../types/Product";
-import * as S from './styles';
+import { api } from "../../utils/api";
 
 export function Main() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selTable, setSelTable] = useState('');
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    Promise.all([
+      api.get('categories'),
+      api.get('products')
+    ])
+    .then((response) => {
+      setCategories(response[0].data);
+      setProducts(response[1].data);
+      setIsLoading(false);
+    })
+  }, []);
+
 
   function handleSaveTable(table: string) {
     setSelTable(table);
@@ -92,12 +117,26 @@ export function Main() {
             ) : (
               <>
                 <S.CategoriesContainer>
-                  <Categories />
+                  <Categories categories={categories} />
                 </S.CategoriesContainer>
 
-                <S.MenuContainer>
-                  <Menu onAddToCart={handleAddToCart} />
-                </S.MenuContainer>
+                {
+                  products.length > 0 ? (
+                    <S.MenuContainer>
+                      <Menu
+                        onAddToCart={handleAddToCart}
+                        products={products}
+                      />
+                    </S.MenuContainer>
+                  ) : (
+                    <S.CenterContainer>
+                      <Empty />
+                      <Text  color="#666" style={{ marginTop: 24 }}>
+                        Nenhum produto foi encontrado!
+                      </Text>
+                    </S.CenterContainer>
+                  )
+              }
               </>
             )
           }
