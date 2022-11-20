@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import socketIo from 'socket.io-client';
+
 import { IOrder, TStatus } from '../../types/Order';
 import { api } from '../../utils/api';
 import { Board } from '../Board';
@@ -51,14 +53,10 @@ const ordersMock: IOrder[] = [
 export function Orders() {
   const [orders, setOrders] = useState<IOrder[]>([]);
 
-  useEffect(() => {
-    api.get('orders')
-      .then((response) => setOrders(response.data));
-  }, [])
-
   function handleCancelOrder(orderId: string) {
     setOrders((prevState) => prevState.filter(order => order._id !== orderId));
   }
+
 
   function handleStatusChange(orderId: string, status: TStatus) {
     setOrders((prevState) => prevState.map(order => (
@@ -67,6 +65,28 @@ export function Orders() {
         : order
     )))
   }
+
+
+  useEffect(() => {
+    api.get('orders')
+      .then((response) => setOrders(response.data));
+  }, [])
+
+
+  useEffect(() => {
+    const socket = socketIo(`http://${import.meta.env.VITE_API_URL}`, {
+      transports: ['websocket'],
+    });
+
+    // socket.on('neworder', () => { console.log('novo pedido') })}, []);
+
+    socket.on('neworder', (order) => {
+      console.log(order)
+      setOrders(prevState => prevState.concat(order));
+    });
+
+    // return () => { socket.disconnect() }
+  }, []);
 
   const waiting = orders.filter(order => order.status === 'WAITING');
   const inProduction = orders.filter(order => order.status === 'IN_PRODUCTION');

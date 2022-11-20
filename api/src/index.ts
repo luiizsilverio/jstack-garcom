@@ -1,12 +1,19 @@
 import express from 'express';
 import path from 'node:path';
 import cors from 'cors';
+import http from "node:http";
+import { Server } from "socket.io";
 import mongoose from 'mongoose';
 import { router } from './router';
 
+const app = express();
+const server = http.createServer(app);
+
+export const io = new Server(server);
+
 mongoose.connect('mongodb://localhost:27017/garcom')
   .then(() => {
-    const app = express();
+    const port = 3000;
 
     app.use('/uploads', express.static(
       path.resolve(__dirname, '..', 'uploads'))
@@ -16,9 +23,7 @@ mongoose.connect('mongodb://localhost:27017/garcom')
     app.use(cors());
     app.use(router);
 
-    const port = 3000;
-
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log(`Rodando API-Garcom na porta ${port}`);
     })
   })

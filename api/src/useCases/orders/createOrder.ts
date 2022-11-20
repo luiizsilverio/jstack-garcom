@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Order } from "../../models/order";
+import { io } from "../..";
 
 export async function createOrder(req: Request, res: Response) {
   const { table, products } = req.body;
@@ -9,6 +10,11 @@ export async function createOrder(req: Request, res: Response) {
       table,
       products: products || []
     });
+
+    const orderDetails = await order.populate('products.product');
+
+    // io.emit('neworder');
+    io.emit('neworder', orderDetails);
 
     res.status(201).json(order);
   }
