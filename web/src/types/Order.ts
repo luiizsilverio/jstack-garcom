@@ -8,9 +8,11 @@ interface IProduct {
   }
 }
 
+export type TStatus = 'WAITING' | 'IN_PRODUCTION' | 'DONE';
+
 export interface IOrder {
   _id: string;
   table: string;
-  status: 'WAITING' | 'IN_PRODUCTION' | 'DONE';
+  status: TStatus;
   products: IProduct[]
 }

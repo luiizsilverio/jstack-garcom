@@ -1,19 +1,20 @@
 import { KeyboardEvent, useEffect, useMemo } from "react";
 import * as S from "./styles"
 import closeIcon from '../../assets/images/close-icon.svg';
-import { IOrder } from "../../types/Order";
+import { IOrder, TStatus } from "../../types/Order";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 interface Props {
   visible: boolean;
   order: IOrder | null;
+  isLoading: boolean;
   onClose(): void;
   onCancelOrder(): Promise<void>;
-  isLoading: boolean;
+  onChangeStatus: () => void;
 }
 
 export function OrderModal(props: Props) {
-  const { visible, order, isLoading, onClose, onCancelOrder } = props;
+  const { visible, order, isLoading, onClose, onCancelOrder, onChangeStatus } = props;
 
   if (!visible || !order) return null;
 
@@ -93,14 +94,25 @@ export function OrderModal(props: Props) {
         </S.Details>
 
         <S.Actions>
-          <button
-            type="button"
-            className="primary"
-            disabled={isLoading}
-          >
-            <span>👨‍🍳</span>
-            <strong>Iniciar Produção</strong>
-          </button>
+          {
+            order.status !== 'DONE' && (
+              <button
+                type="button"
+                className="primary"
+                disabled={isLoading}
+                onClick={onChangeStatus}
+              >
+                <span>
+                  {order.status === 'WAITING' && '👨‍🍳'}
+                  {order.status === 'IN_PRODUCTION' && '✅'}
+                </span>
+                <strong>
+                  {order.status === 'WAITING' && 'Iniciar Produção'}
+                  {order.status === 'IN_PRODUCTION' && 'Concluir Pedido'}
+                </strong>
+              </button>
+            )
+          }
 
           <button
             className="secondary"

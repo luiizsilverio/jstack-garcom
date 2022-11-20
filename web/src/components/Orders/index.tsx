@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IOrder } from '../../types/Order';
+import { IOrder, TStatus } from '../../types/Order';
 import { api } from '../../utils/api';
 import { Board } from '../Board';
 import * as S from './styles';
@@ -60,6 +60,14 @@ export function Orders() {
     setOrders((prevState) => prevState.filter(order => order._id !== orderId));
   }
 
+  function handleStatusChange(orderId: string, status: TStatus) {
+    setOrders((prevState) => prevState.map(order => (
+      order._id === orderId
+        ? { ...order, status }
+        : order
+    )))
+  }
+
   const waiting = orders.filter(order => order.status === 'WAITING');
   const inProduction = orders.filter(order => order.status === 'IN_PRODUCTION');
   const done = orders.filter(order => order.status === 'DONE');
@@ -71,18 +79,21 @@ export function Orders() {
         title="Fila de espera"
         orders={waiting}
         onCancelOrder={handleCancelOrder}
+        onChangeStatus={handleStatusChange}
       />
       <Board
         icon="👨‍🍳"
         title="Em preparação"
         orders={inProduction}
         onCancelOrder={handleCancelOrder}
+        onChangeStatus={handleStatusChange}
       />
       <Board
         icon="✅"
         title="Pronto"
         orders={done}
         onCancelOrder={handleCancelOrder}
+        onChangeStatus={handleStatusChange}
       />
 
     </S.Container>
