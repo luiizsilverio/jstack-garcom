@@ -25,20 +25,7 @@ export function Main() {
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    Promise.all([
-      api.get('categories'),
-      api.get('products')
-    ])
-    .then((response) => {
-      setCategories(response[0].data);
-      setProducts(response[1].data);
-      setIsLoading(false);
-    })
-  }, []);
+  const [loadingProducts, setLoadingProducts] = useState(false);
 
 
   function handleSaveTable(table: string) {
@@ -105,6 +92,35 @@ export function Main() {
   }
 
 
+  async function handleSelectCategory(categoryId: string) {
+    const route = !categoryId
+      ? '/products'
+      : `/categories/${categoryId}/products`;
+
+    setLoadingProducts(true);
+
+    const { data } = await api.get(route);
+
+    setProducts(data);
+    setLoadingProducts(false);
+  }
+
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    Promise.all([
+      api.get('categories'),
+      api.get('products')
+    ])
+    .then((response) => {
+      setCategories(response[0].data);
+      setProducts(response[1].data);
+      setIsLoading(false);
+    })
+  }, []);
+
+
   return (
     <>
       <S.Container>
@@ -114,10 +130,15 @@ export function Main() {
               <S.CenterContainer>
                 <ActivityIndicator color="#ccc" size="large" />
               </S.CenterContainer>
+
             ) : (
+
               <>
                 <S.CategoriesContainer>
-                  <Categories categories={categories} />
+                  <Categories
+                    categories={categories}
+                    onSelect={handleSelectCategory}
+                  />
                 </S.CategoriesContainer>
 
                 {
@@ -128,7 +149,9 @@ export function Main() {
                         products={products}
                       />
                     </S.MenuContainer>
+
                   ) : (
+
                     <S.CenterContainer>
                       <Empty />
                       <Text  color="#666" style={{ marginTop: 24 }}>
@@ -149,6 +172,7 @@ export function Main() {
             selTable
               ? (
                 <Cart
+                  selectedTable={selTable}
                   cartItems={cartItems}
                   onAdd={handleAddToCart}
                   onRemove={handleRemoveItem}

@@ -43,7 +43,7 @@ export function ProductModal({ visible, product, onClose, onAddToCart }: Props) 
 
         <S.IngredientsContainer>
           {
-            product.ingredients.length > 0 && (
+            product.ingredients?.length > 0 && (
               <Text weight="600" color="#666">Ingredientes</Text>
             )
           }
