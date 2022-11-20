@@ -2,7 +2,6 @@ import { FlatList, TouchableOpacity } from "react-native";
 import { useState } from 'react';
 
 import { IProduct } from "../../types/Product";
-import { products } from "../../mocks/products";
 import { PlusCircle } from "../Icons/PlusCircle";
 import { ProductModal } from "../ProductModal";
 import { Text } from "../Text";
@@ -10,9 +9,10 @@ import * as S from './styles';
 
 interface Props {
   onAddToCart: (product: IProduct) => void;
+  products: IProduct[];
 }
 
-export function Menu({ onAddToCart }: Props) {
+export function Menu({ onAddToCart, products }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
 
@@ -27,8 +27,9 @@ export function Menu({ onAddToCart }: Props) {
         visible={modalVisible}
         product={selectedProduct}
         onClose={() => setModalVisible(false)}
-        onAddToCart={() => onAddToCart(selectedProduct)}
+        onAddToCart={() => onAddToCart(selectedProduct!)}
       />
+
       <FlatList
         data={products}
         keyExtractor={(prod) => prod._id}
@@ -38,7 +39,7 @@ export function Menu({ onAddToCart }: Props) {
         renderItem={({ item: product }) => (
           <S.Product onPress={() => handleOpenModal(product)}>
             <S.ProductImage
-              source={{ uri: `http://192.168.100.2:3000/uploads/${product.imagePath}`}}
+              source={{ uri: `http://${process.env.API_URL}/uploads/${product.imagePath}`}}
             />
             <S.ProductDetails>
               <Text weight="600">{product.name}</Text>

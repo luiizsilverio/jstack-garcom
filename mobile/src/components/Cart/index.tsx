@@ -5,18 +5,21 @@ import { IProduct } from "../../types/Product";
 import { Button } from "../Button";
 import { MinusCircle } from "../Icons/MinusCircle";
 import { PlusCircle } from "../Icons/PlusCircle";
+import { ConfirmOrderModal } from "../ConfirmOrderModal";
 import { Text } from "../Text";
 import * as S from './styles';
-import { ConfirmOrderModal } from "../ConfirmOrderModal";
+import { api } from "../../utils/api";
 
 interface Props {
   cartItems: ICartItem[]
+  selectedTable: string;
   onAdd: (product: IProduct) => void;
   onRemove: (product: IProduct) => void;
   onConfirm(): void;
 }
 
-export function Cart({ cartItems, onAdd, onRemove, onConfirm }: Props) {
+export function Cart(props: Props) {
+  const { selectedTable, cartItems, onAdd, onRemove, onConfirm } = props;
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,7 +30,20 @@ export function Cart({ cartItems, onAdd, onRemove, onConfirm }: Props) {
   ), [cartItems]);
 
 
-  function handleConfirmOrder() {
+  async function handleConfirmOrder() {
+    const payload = {
+      table: selectedTable,
+      products: cartItems.map(item => ({
+        product: item.product._id,
+        quantity: item.quantity,
+      }))
+    }
+
+    setIsLoading(true);
+
+    await api.post('orders', payload);
+
+    setIsLoading(false);
     setModalVisible(true);
   }
 
@@ -55,7 +71,7 @@ export function Cart({ cartItems, onAdd, onRemove, onConfirm }: Props) {
             <S.ItemContainer>
               <S.ProductContainer>
                 <S.Image
-                  source={{ uri: `http://192.168.100.2:3000/uploads/${item.product.imagePath}`}}
+                  source={{ uri: `http://${process.env.API_URL}/uploads/${item.product.imagePath}`}}
                 />
 
                 <S.QuantityContainer>
