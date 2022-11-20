@@ -19,8 +19,8 @@
 ## Sobre a aplicação
 Aplicação desenvolvida durante o evento __JStack__, promovido pela empresa __O Poder do Javascript__.<br />
 Foram 5 dias de aula, totalizando mais de 17 horas de vídeo, desenvolvendo uma API em Node, um front-end em React e um aplicativo mobile em React Native.<br />
-A aplicação permite lançar pedidos no celular e fechar os pedidos na aplicação web. Os pedidos podem estar Aguardando, Em preparação ou finalizados.<br />
-O backend armazena os dados em um banco de dados MongoDb e interage com o front-end por meio de __WebSockets__.<br/>
+A aplicação permite lançar pedidos no celular e fechar os pedidos na aplicação web. Os pedidos podem estar na situação Aguardando, Em preparação ou Finalizado.<br />
+O backend armazena os dados em um banco de dados __MongoDb__ e interage com o front-end por meio de __WebSockets__.<br/>
 
 
 ## :hammer_and_wrench: Tecnologias
@@ -44,7 +44,7 @@ O backend armazena os dados em um banco de dados MongoDb e interage com o front-
 
 ## :car: Iniciando a aplicação
 Baixe o repositório com git clone e entre na pasta do projeto.<br/>
-Renomeie os arquivos _.env.example_ da pasta _web_ e _mobile_ para _.env_ e informe o endereço:porta da API.<br/>
+Renomeie os arquivos _.env.example_ da pasta _web_ e _mobile_ para _.env_ e informe o _ip:porta_ da API.<br/>
 ```bash
 $ git clone https://github.com/luiizsilverio/jstack-garcom
 ```
@@ -71,7 +71,8 @@ $ yarn start
 
 
 ## :camera_flash: Screenshots
-![]()
+![](https://github.com/luiizsilverio/jstack-garcom/blob/master/mobile/src/assets/images/waiter-app.gif)
+![](https://github.com/luiizsilverio/jstack-garcom/blob/master/web/src/assets/images/waiter-web.gif)
 
 ## :balance_scale: Licença
 Este projeto está licenciado sob a [licença MIT](LICENSE).
