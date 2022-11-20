@@ -7,10 +7,13 @@ import { formatCurrency } from "../../utils/formatCurrency";
 interface Props {
   visible: boolean;
   order: IOrder | null;
-  onClose(): void
+  onClose(): void;
+  onCancelOrder(): Promise<void>;
+  isLoading: boolean;
 }
 
-export function OrderModal({ visible, order, onClose }: Props) {
+export function OrderModal(props: Props) {
+  const { visible, order, isLoading, onClose, onCancelOrder } = props;
 
   if (!visible || !order) return null;
 
@@ -90,11 +93,20 @@ export function OrderModal({ visible, order, onClose }: Props) {
         </S.Details>
 
         <S.Actions>
-          <button type="button" className="primary">
+          <button
+            type="button"
+            className="primary"
+            disabled={isLoading}
+          >
             <span>👨‍🍳</span>
             <strong>Iniciar Produção</strong>
           </button>
-          <button className="secondary">
+
+          <button
+            className="secondary"
+            onClick={onCancelOrder}
+            disabled={isLoading}
+          >
             Cancelar Pedido
           </button>
         </S.Actions>

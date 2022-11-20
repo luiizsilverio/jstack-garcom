@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { IOrder } from '../../types/Order';
+import { api } from '../../utils/api';
 import { Board } from '../Board';
 import * as S from './styles';
 
-const orders: IOrder[] = [
+const ordersMock: IOrder[] = [
   {
     "_id": "637411eb234c8b31fcd96766",
     "table": "123",
@@ -47,22 +49,40 @@ const orders: IOrder[] = [
 ]
 
 export function Orders() {
+  const [orders, setOrders] = useState<IOrder[]>([]);
+
+  useEffect(() => {
+    api.get('orders')
+      .then((response) => setOrders(response.data));
+  }, [])
+
+  function handleCancelOrder(orderId: string) {
+    setOrders((prevState) => prevState.filter(order => order._id !== orderId));
+  }
+
+  const waiting = orders.filter(order => order.status === 'WAITING');
+  const inProduction = orders.filter(order => order.status === 'IN_PRODUCTION');
+  const done = orders.filter(order => order.status === 'DONE');
+
   return (
     <S.Container>
       <Board
         icon="🕒"
         title="Fila de espera"
-        orders={orders}
+        orders={waiting}
+        onCancelOrder={handleCancelOrder}
       />
       <Board
         icon="👨‍🍳"
         title="Em preparação"
-        orders={[]}
+        orders={inProduction}
+        onCancelOrder={handleCancelOrder}
       />
       <Board
         icon="✅"
         title="Pronto"
-        orders={[]}
+        orders={done}
+        onCancelOrder={handleCancelOrder}
       />
 
     </S.Container>

@@ -6,7 +6,6 @@ export const BoardContainer = styled.div`
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   flex: 1;
 

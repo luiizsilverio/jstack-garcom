@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'node:path';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import { router } from './router';
 
@@ -12,6 +13,7 @@ mongoose.connect('mongodb://localhost:27017/garcom')
     );
 
     app.use(express.json());
+    app.use(cors());
     app.use(router);
 
     const port = 3000;
