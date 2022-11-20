@@ -17,7 +17,7 @@
 * [Contato](#email-contato)
 
 ## Sobre a aplicação
-Aplicação desenvolvida durante o evento __JStack__, promovido pela empresa __O Poder do Javascript__.<br />
+Aplicação desenvolvida durante o evento __JStack__, com o professor Mateus Silva.<br />
 Foram 5 dias de aula, totalizando mais de 17 horas de vídeo, desenvolvendo uma API em Node, um front-end em React e um aplicativo mobile em React Native.<br />
 A aplicação permite lançar pedidos no celular e fechar os pedidos na aplicação web. Os pedidos podem estar na situação Aguardando, Em preparação ou Finalizado.<br />
 O backend armazena os dados em um banco de dados __MongoDb__ e interage com o front-end por meio de __WebSockets__.<br/>
